@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스파르타코딩클럽 Team B3</title>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Noto+Sans+KR:wght@500&display=swap"
+    rel="stylesheet">
+
+  <style>
+    * {
+      font-family: 'Montserrat', sans-serif;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .header {
+      max-width: 800px;
+      text-align: center;
+      background-image: url("https://images.velog.io/images/cada/post/ea6df9e9-1c86-4660-b77b-a059afa3e6bc/7eac26d04145-article-181102-google-javascript-body-text.jpg");
+      margin: auto;
+      padding: 30px 100px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .header>div {
+      width: 800px;
+      font-size: 20px;
+      font-weight: 700;
+      background-color: white;
+      opacity: 0.8;
+    }
+
+    .menu {
+      max-width: 800px;
+      margin: 20px auto;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .menu>a {
+      width: 120px;
+      border: solid;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .member {
+      max-width: 800px;
+      margin: auto;
+      background-color: gainsboro;
+      padding: 100px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .member-details {
+      background-color: white;
+      width: 600px;
+      padding: 10px;
+      margin-right: 20px;
+      border-radius: 10px;
+    }
+
+    .guestbook {
+      background-color: white;
+      padding: 10px;
+      width: 320px;
+      font-size: 14px;
+      border-radius: 10px;
+    }
+
+    .guestcards {
+
+      padding: 10px;
+      width: 95%;
+      max-width: 500px;
+      margin: auto;
+
+    }
+
+    .card-body {
+      border: 1px solid;
+      border-radius: 5px;
+    }
+
+    .blockquote {
+      padding: 5px;
+      font-size: 12px;
+      max-width: 300px;
+      margin: 0;
+    }
+
+    .card-body,
+    .mypost {
+      max-width: 300px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .form-control {
+      width: 285px;
+    }
+  </style>
+  <script>
+    function show_comment() {
+      fetch('/guestbook').then((res) => res.json()).then((data) => {
+        let rows = data['result']
+        $('#comment-list').empty();
+        rows.forEach((a) => {
+          let nick = a['nick'];
+          let comment = a['comment']
+          let temp_html = `<div class="card">
+                            <div class="card-body">
+                              <blockquote class="blockquote mb-0">
+                                <p>${comment}</p>
+                                <footer class="blockquote-footer">${nick}</footer>
+                              </blockquote>
+                            </div>
+                          </div>`
+          $('#comment-list').append(temp_html);
+        })
+      })
+    };
+    function save_comment() {
+      let nick = $('#name').val();
+      let comment = $('#comment').val();
+
+      let formData = new FormData();
+      formData.append("nick_give", nick);
+      formData.append("comment_give", comment);
+
+      fetch('/guestbook', { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
+        alert(data['msg']);
+        window.location.reload();
+      });
+    };
+  </script>
+</head>
+
+<body>
+  <div class="header">
+    <div>
+      <p>Team B3</p>
+      <p>Become 3% of Backend</p>
+    </div>
+  </div>
+  <div class="menu">
+    <a href="./index.html">Team B3</a>
+    <a href>팀장 류원희</a>
+    <a href>팀원 이승준</a>
+    <a href>팀원 송황주</a>
+    <a href>팀원 이병수</a>
+  </div>
+  <div class="member">
+    <div class="member-details">
+      <h1>팀원 이름</h1>
+      <h2>팀 이름</h2>
+      <p>팀 목표</p>
+      <p>우리 팀의 약속</p>
+    </div>
+    <div class="guestbook">
+      <div class="guestcards" id="comment-list">
+        <div class="card">
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p>새로운 앨범 너무 멋져요!</p>
+              <footer class="blockquote-footer">호빵맨</footer>
+            </blockquote>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p>새로운 앨범 너무 멋져요!</p>
+              <footer class="blockquote-footer">호빵맨</footer>
+            </blockquote>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p>새로운 앨범 너무 멋져요!</p>
+              <footer class="blockquote-footer">호빵맨</footer>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="mypost">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="name" placeholder="닉네임" />
+          </div>
+          <div class="form-floating">
+            <textarea class="form-control" placeholder="응원 댓글을 남겨주세요" id="comment" style="height: 50px"></textarea>
+          </div>
+          <button onclick="save_comment()" type="button" class="btn btn-dark">
+            댓글 남기기
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>
