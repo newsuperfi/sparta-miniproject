@@ -137,6 +137,12 @@
       show_menu();
     });
 
+    function show_page(memberId) {
+      show_member(memberId);
+      show_comment(memberId);
+      make_write_button(memberId);
+    }
+
     function show_menu() {
       fetch('/members').then((res) => res.json()).then((data) => {
         let rows = data['result']
@@ -150,16 +156,7 @@
       })
     }
 
-    function show_page(memberId) {
-      show_member(memberId);
-      show_comment(memberId);
-      make_write_button(memberId);
-      var memberId = memberId
-    }
-    console.log(memberId);
-
     function show_member(memberId) {
-      console.log(memberId);
       fetch(`members/${memberId}`, { headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
         console.log(data['result']);
         let member_data = data['result']
@@ -175,13 +172,13 @@
                           <p>블로그 주소: ${blog}</p>
                           <p>깃헙 주소: ${gitgub}</p>
                           <button onclick="delete_member('${memberId}')" type="button" class="btn btn-dark">팀원 삭제
-          </button>`
+                          </button>`
         $('.member-details').append(temp_html);
       })
     }
 
     function show_comment(memberId) {
-      fetch(`/guestbook/${memberId}`).then((res) => res.json()).then((data) => {
+      fetch(`/members/${memberId}/guestbook`).then((res) => res.json()).then((data) => {
         console.log(data);
         let rows = data['result_guestbook']
         $('#comment-list').empty();
@@ -223,7 +220,7 @@
       formData.append("nick_give", nick);
       formData.append("comment_give", comment);
 
-      fetch(`/guestbook/${memberId}`, { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
+      fetch(`/members/${memberId}/guestbook`, { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
         alert(data['msg']);
         window.location.reload(`/show_page/${memberId}`);
       });
@@ -238,7 +235,7 @@
 
 
     function delete_comment(memberId) {
-      fetch(`/guestbook/${memberId}`, { method: "DELETE", headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
+      fetch(`/members/${memberId}/guestbook`, { method: "DELETE", headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
         alert(data['msg']);
         window.location.reload(`/show_page/${memberId}`);
       });

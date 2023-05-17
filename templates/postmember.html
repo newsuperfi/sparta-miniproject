@@ -118,6 +118,29 @@
         window.location.reload();
       });
     }
+
+    function edit_member() {
+      let member = $('#member').val();
+      let mbti = $('#mbti').val();
+      let motive = $('#motive').val()
+      let blog = $('#blog').val()
+      let github = $('#github').val()
+      let memberId = $('#memberId').val();
+
+      let formData = new FormData();
+      formData.append("member_give", member);
+      formData.append("mbti_give", mbti);
+      formData.append("motive_give", motive);
+      formData.append("blog_give", blog);
+      formData.append("github_give", github);
+      formData.append("memberId_give", memberId);
+
+
+      fetch(`/members/${memberId}`, { method: "PUT", body: formData, }).then((res) => res.json()).then((data) => {
+        alert(data['msg']);
+        window.location.reload();
+      });
+    }
   </script>
 
 
@@ -143,6 +166,9 @@
     <div class="btn">
       <button onclick="save_member()" type="button" class="btn btn-dark">
         팀원 등록
+      </button>
+      <button onclick="edit_member()" type="button" class="btn btn-dark">
+        팀원 수정
       </button>
     </div>
 
