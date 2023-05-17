@@ -14,11 +14,43 @@ def home():
 def team():
    return render_template('member.html')
 
-@app.route("/menu", methods=["GET"])
-def menu_get():
-    all_member = list(db.memberTable.find({},{'_id':False}))
+@app.route('/post_member')
+def post_member():
+   return render_template('postmember.html')
 
-    return jsonify({'result_member': all_member})
+@app.route("/members", methods=["GET"])
+def menu_get():
+    all_member = list(db.member.find({},{'_id':False}))
+
+    return jsonify({'result': all_member})
+
+@app.route("/members", methods=["POST"])
+def membertable_post():
+    member_receive = request.form['member_give']
+    mbti_receive = request.form['mbti_give']
+    motive_receive = request.form['motive_give']
+    blog_receive = request.form['blog_give']
+    github_receive = request.form['github_give']
+    memberId_receive = request.form['memberId_give']
+    
+
+    doc = {
+      'member': member_receive,
+      'mbti':mbti_receive,
+      'motive' : motive_receive,
+      'blog': blog_receive,
+      'github': github_receive,
+      'memberId': memberId_receive
+      }
+    db.member.insert_one(doc)
+
+    return jsonify({'msg': '저장 완료!'})
+
+@app.route("/members/<memberId>", methods=["DELETE"])
+def membertable_delete(memberId):
+    
+    db.member.delete_one({'memberId': memberId})
+    return jsonify({'msg':'삭제 완료!'})
 
 
 @app.route("/guestbook/<memberId>", methods=["POST"])
@@ -48,8 +80,14 @@ def member_get(memberId):
     member_data = db.member.find_one({'memberId': memberId},{'_id':False})
     return jsonify({'result': member_data})
 
+
+
+@app.route("/guestbook/<memberId>", methods=["DELETE"])
+def guestbook_delete(memberId):
+    
+    db.guestbook.delete({'memberId': memberId})
+    return jsonify({'msg':'삭제 완료!'})
+
+
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)
-
-# all_members_data = list(db.member.find({},{'_id':False}))
-# print(all_members_data)

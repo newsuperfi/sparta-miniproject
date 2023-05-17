@@ -60,6 +60,14 @@
       text-align: center;
     }
 
+    .menu>button {
+      width: 120px;
+      border: solid;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+    }
+
     .member {
       max-width: 1000px;
       margin: auto;
@@ -123,8 +131,8 @@
     });
 
     function show_menu() {
-      fetch('/menu').then((res) => res.json()).then((data) => {
-        let rows = data['result_member']
+      fetch('/members').then((res) => res.json()).then((data) => {
+        let rows = data['result']
         console.log(rows[1]['member'])
         for (i = 0; i < rows.length; i++) {
           let member = rows[i]['member'];
@@ -133,6 +141,8 @@
           $('.menu').append(temp_html);
         }
       })
+      let btn_postpage = `<a href="/post_member">팀원 등록</a>`
+      $('.menu').append(btn_postpage);
     }
 
     function show_page(memberId) {
@@ -142,6 +152,7 @@
       var memberId = memberId
     }
     console.log(memberId);
+
     function show_member(memberId) {
       console.log(memberId);
       fetch(`members/${memberId}`, { headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
@@ -154,10 +165,12 @@
         let blog = member_data['blog']
         let gitgub = member_data['gitgub']
         let temp_html = `<h3>${member}</h3>
-                            <p>MBTI: ${mbti}</p>
-                            <p>지원 동기 및 각오: ${motive}</p>
-                            <p>블로그 주소: ${blog}</p>
-                            <p>깃헙 주소: ${gitgub}</p>`
+                          <p>MBTI: ${mbti}</p>
+                          <p>지원 동기 및 각오: ${motive}</p>
+                          <p>블로그 주소: ${blog}</p>
+                          <p>깃헙 주소: ${gitgub}</p>
+                          <button onclick="delete_member('${memberId}')" type="button" class="btn btn-dark">팀원 삭제
+          </button>`
         $('.member-details').append(temp_html);
       })
     }
@@ -190,6 +203,9 @@
       let temp_html = `
           <button onclick="save_comment('${memberId}')" type="button" class="btn btn-dark">
             댓글 남기기
+          </button>
+          <button onclick="delete_comment('${memberId}')" type="button" class="btn btn-dark">
+            전체 삭제
           </button>`
       $('.btn').append(temp_html)
     }
@@ -203,6 +219,21 @@
       formData.append("comment_give", comment);
 
       fetch(`/guestbook/${memberId}`, { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
+        alert(data['msg']);
+        window.location.reload(`/show_page/${memberId}`);
+      });
+    }
+
+    function delete_member(memberId) {
+      fetch(`/members/${memberId}`, { method: "DELETE", headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
+        alert(data['msg']);
+        window.location.reload(`/show_page/${memberId}`);
+      });
+    }
+
+
+    function delete_comment(memberId) {
+      fetch(`/guestbook/${memberId}`, { method: "DELETE", headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
         alert(data['msg']);
         window.location.reload(`/show_page/${memberId}`);
       });
@@ -262,10 +293,10 @@
       </div>
       <div>
         <div class="mypost">
-          <div class="form-floating mb-3">
+          <div>
             <input type="text" class="form-control" id="name" placeholder="닉네임" />
           </div>
-          <div class="form-floating">
+          <div>
             <textarea class="form-control" placeholder="응원 댓글을 남겨주세요" id="comment" style="height: 50px"></textarea>
           </div>
           <div class="btn">
