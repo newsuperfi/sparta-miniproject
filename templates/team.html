@@ -103,6 +103,7 @@
       margin-right: 20px;
       border-radius: 10px;
       opacity: 0.75;
+      text-align: center;
     }
 
     .guestbook {
@@ -150,24 +151,18 @@
   <script>
     $(document).ready(function () {
       show_menu();
-      const result = {{ result | tojson }};
-      console.log(result['memberId'])
-      memberId = result['memberId'];
-      console.log(memberId)
-      show_comment(memberId);
-      make_write_button(memberId);
-      member_delete_button(memberId);
     });
 
-    // function show_page(memberId) {
-    //   show_member(memberId);
-    //   show_comment(memberId);
-    //   make_write_button(memberId);
-    // }
+    function show_page(memberId) {
+      show_member(memberId);
+      show_comment(memberId);
+      make_write_button(memberId);
+    }
 
     function show_menu() {
       fetch('/members').then((res) => res.json()).then((data) => {
         let rows = data['result']
+        console.log(rows[1]['member'])
         for (i = 0; i < rows.length; i++) {
           let member = rows[i]['member'];
           let memberId = rows[i]['memberId'];
@@ -177,26 +172,26 @@
       })
     }
 
-    // function show_member(memberId) {
-    //   fetch(`members/${memberId}`, { headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
-    //     console.log(data['result']);
-    //     let member_data = data['result']
-    //     $('.member-details').empty();
-    //     let member = member_data['member'];
-    //     let mbti = member_data['mbti']
-    //     let motive = member_data['motive']
-    //     let blog = member_data['blog']
-    //     let gitgub = member_data['gitgub']
-    //     let temp_html = `<h3>${member}</h3>
-    //                       <p>MBTI: ${mbti}</p>
-    //                       <p>지원 동기 및 각오: ${motive}</p>
-    //                       <p>블로그 주소: ${blog}</p>
-    //                       <p>깃헙 주소: ${gitgub}</p>
-    //                       <button onclick="delete_member('${memberId}')" type="button" class="btn btn-dark">팀원 삭제
-    //                       </button>`
-    //     $('.member-details').append(temp_html);
-    //   })
-    // }
+    function show_member(memberId) {
+      fetch(`members/${memberId}`, { headers: { 'Content-Type': 'text/plain' } }).then((res) => res.json()).then((data) => {
+        console.log(data['result']);
+        let member_data = data['result']
+        $('.member-details').empty();
+        let member = member_data['member'];
+        let mbti = member_data['mbti']
+        let motive = member_data['motive']
+        let blog = member_data['blog']
+        let gitgub = member_data['gitgub']
+        let temp_html = `<h3>${member}</h3>
+                          <p>MBTI: ${mbti}</p>
+                          <p>지원 동기 및 각오: ${motive}</p>
+                          <p>블로그 주소: ${blog}</p>
+                          <p>깃헙 주소: ${gitgub}</p>
+                          <button onclick="delete_member('${memberId}')" type="button" class="btn btn-dark">팀원 삭제
+                          </button>`
+        $('.member-details').append(temp_html);
+      })
+    }
 
     function show_comment(memberId) {
       fetch(`/members/${memberId}/guestbook`).then((res) => res.json()).then((data) => {
@@ -233,13 +228,6 @@
       $('.btn').append(temp_html)
     }
 
-    function member_delete_button(memberId) {
-      let temp_html = `
-        <button onclick="delete_member('${memberId}')" type="button" class="btn btn-dark">팀원 삭제</button>
-        `
-      $('.member-details').append(temp_html)
-    }
-    
     function save_comment(memberId) {
       let nick = $('#name').val();
       let comment = $('#comment').val();
@@ -285,11 +273,8 @@
   </div>
   <div class="member">
     <div class="member-details">
-    <h3>이름 : {{result.member}}</h3>
-    <p>MBTI: {{result.mbti}}</p>
-    <p>지원 동기 및 각오: {{result.motive}}</p>
-    <p>블로그 주소: {{result.blog}}</p>
-    <p>깃헙 주소: {{result.github}}</p>
+      <h1>팀 B3의 멤버를</h1>
+      <h1>소개합니다!</h1>
     </div>
     <div class="guestbook">
       <div class="guestcards" id="comment-list">
@@ -304,11 +289,8 @@
             <textarea class="form-control" placeholder="응원 댓글을 남겨주세요" id="comment" style="height: 50px"></textarea>
           </div>
           <div class="btn">
-            <button onclick="save_comment('${memberId}')" type="button" class="btn btn-dark">
+            <button onclick="save_comment()" type="button" class="btn btn-dark">
               댓글 남기기
-            </button>
-            <button onclick="delete_comment('${memberId}')" type="button" class="btn btn-dark">
-              삭제
             </button>
           </div>
         </div>

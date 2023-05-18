@@ -15,7 +15,7 @@ def home():
 # 팀소개 페이지 -> 팀원 소개 버튼 -> GET /team 요청 -> 팀원 소개 페이지 파일 제공
 @app.route('/team') 
 def team():
-   return render_template('member.html') 
+   return render_template('team.html') 
 
 
 # 팀원 소개 페이지 -> 팀원 등록 버튼 -> GET /post_member 요청 
@@ -32,6 +32,7 @@ def menu_get():
     all_member = list(db.member.find({},{'_id':False}))
 
     return jsonify({'result': all_member})
+
 
 
 # 팀원 등록 페이지 save_member() 함수 실행 -> POST /members 요청 -> json형태로 폼 데이터 전송받음 
@@ -123,7 +124,8 @@ def guestbook_get(memberId):
 @app.route("/members/<memberId>", methods=["GET"])
 def member_get(memberId):
     member_data = db.member.find_one({'memberId': memberId},{'_id':False})
-    return jsonify({'result': member_data})
+    return render_template('member.html', result=member_data)
+    # return jsonify({'result': member_data})
 
 
 # 팀원 소개 페이지 내에서 방명록 삭제 버튼 클릭 -> DELETE /guestbook/memberId 요청 
