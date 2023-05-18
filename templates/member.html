@@ -151,9 +151,7 @@
     $(document).ready(function () {
       show_menu();
       const result = {{ result | tojson }};
-      console.log(result['memberId'])
       memberId = result['memberId'];
-      console.log(memberId)
       show_comment(memberId);
       make_write_button(memberId);
       member_delete_button(memberId);
